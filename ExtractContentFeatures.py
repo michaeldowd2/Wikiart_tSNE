@@ -22,7 +22,7 @@ def list_files(folder):
                 r.append(os.path.join(root,name))
                 x = x + 1
                 if (MAX_IMAGES>0 and x>MAX_IMAGES):
-                    break
+                    return r
     return r
 
 def CreateFeatureFiles():
@@ -64,15 +64,15 @@ def MergeFeatureFiles():
                  vgg19_Content_Files.append(os.path.join(file_Folder,name))
 
     i = 0
-    vgg19_Content_Features_Final = pd.DataFrame(columns=['image'])
+    vgg19_Content_Features_Final = pd.DataFrame(columns=['Image'])
     print('Merging VGG Content Files')
     for file in vgg19_Content_Files:
         print('Merging VGG Content Files: ' + str(i+1) + '/' + str(len(vgg19_Content_Files)))
         if (i==0):
-            vgg19_Content_Features_Final = pd.read_csv(file) 
+            vgg19_Content_Features_Final = pd.read_csv(file,index_col=0)
             first = False
         else:
-            tempFeats = pd.read_csv(file) 
+            tempFeats = pd.read_csv(file,index_col=0)
             vgg19_Content_Features_Final = pd.concat([vgg19_Content_Features_Final, tempFeats])
         os.remove(file)
         i = i + 1

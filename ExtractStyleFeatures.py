@@ -13,7 +13,7 @@ from tensorflow.python.framework import ops
 ops.reset_default_graph()
 #tf.enable_eager_execution() #uncomment if tensorflow version < 2.0
 
-BATCH_SIZE=512
+BATCH_SIZE=1000
 PCA_SIZE=512
 MAX_IMAGES=-1
 #file_Folder = '//home//michael//git//DCGAN_Artist//ConvNet_Features//'
@@ -52,7 +52,7 @@ def list_files(folder):
                 r.append(os.path.join(root,name))
                 x = x + 1
                 if (MAX_IMAGES>0 and x>MAX_IMAGES):
-                    break
+                    return r
     return r
 
 def CreateFeatureFiles(ipca = None):
@@ -115,7 +115,6 @@ def CreateFeaturePCA():
             vgg19_Style_NP = np.vstack((vgg19_Style_NP,style_out))
         except:
             print('Image cant be loaded: ' + str(imageFile)) 
-
 
         if ((i%BATCH_SIZE == 0) or i == imageCount):
             #Check if this is the second last batch and skip logic
