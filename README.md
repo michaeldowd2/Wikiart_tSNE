@@ -1,4 +1,4 @@
-# WikiArt Feature Maps
+# WikiArt t-SNE Embeddings and Parametric Model
 
 In this repo I've provided a full set of t-SNE embeddings for the wikiart dataset + a parametric t-SNE Model trained on those embeddings. Feel free to use them for art or machine learning projects.
 
