@@ -6,16 +6,14 @@ from sklearn import manifold
 from sklearn.preprocessing import normalize
 import numpy as np
 
-FILE_FOLDER = '//home//michael//git//wikiart_feature_maps//ConvNet_Features//'
-#FILE_FOLDER = '//src//ConvNet_Features//'
 CONTENT_WEIGHT = 0.0
 STYLE_WEIGHT = 1.0
 
 def NormaliseFeatures():
-    content = pd.read_csv(os.path.join(FILE_FOLDER,'vgg19_Content_Features_Final.csv'),index_col=0)
+    content = pd.read_csv(os.path.join('.//Output//','vgg19_Content_Features_Final.csv'),index_col=0)
     norm_content=(content-content.min())/(content.max()-content.min()) * CONTENT_WEIGHT
 
-    style = pd.read_csv(os.path.join(FILE_FOLDER,'vgg19_Style_Features_Final.csv'),index_col=0)
+    style = pd.read_csv(os.path.join('.//Output//','vgg19_Style_Features_Final.csv'),index_col=0)
     norm_style=(style-style.min())/(style.max()-style.min()) * STYLE_WEIGHT
 
     if STYLE_WEIGHT > 0 and CONTENT_WEIGHT >0:
@@ -39,7 +37,7 @@ def GenerateTSNE(Features):
     tsne_DF = pd.DataFrame.from_dict(tsne_Dict, orient='index')
     tsne_DF.index.name =  'Image'
     tsne_DF.columns=['X','Y']
-    tsne_DF.to_csv(os.path.join(FILE_FOLDER,filename))
+    tsne_DF.to_csv(os.path.join('.//Output//',filename))
             
 normalisedFeatures = NormaliseFeatures()
 GenerateTSNE(normalisedFeatures)
