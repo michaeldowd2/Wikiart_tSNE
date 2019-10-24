@@ -2,13 +2,14 @@
 
 In this repo I've provided a full set of t-SNE embeddings for the wikiart dataset + a parametric t-SNE Model trained on those embeddings. Feel free to use them for art or machine learning projects.
 
-The embeddings are built using the keras applications VGG19 convolution network pretrained on the Imagenet dataset to extract two sets of features: one generally representing content, the other style. These features are normalised, weighted and combined before running the sklearn t-SNE over them. 
-Here's a diagram of the process architecture:
+The embeddings are built using the keras applications VGG19 convolution network pretrained on the Imagenet dataset to extract two sets of features: one generally representing content (features extracted from the last layer of the network), the other generally representing style (features extracted from the conv3_1 layer of the network). 
+These sets features are normalised, weighted and combined before running the sklearn t-SNE over them. The output of this is used to train a neural network which can be used to generate t-SNE coordinates for any arbitrary image. Here's a summary diagram of the extraction process:
 
 ![Architecture Overview](https://raw.githubusercontent.com/michaeldowd2/Wikiart_tSNE/master/Images/Architecture_Summary.png)
 
-## Sample Images and Experiments
-Here's a random sample from the wikiart dataset plotted using the provided t-SNE embeddings. Note the relatively nice clustering of similar paintings:
+
+## Qualitative Outputs
+The embeddings are provided with different weights given to content and style. Here's a random sample from the wikiart dataset plotted using the provided t-SNE embeddings. Note the relatively nice clustering of similar paintings:
 
 ![Big tSNE Diagram](https://raw.githubusercontent.com/michaeldowd2/Wikiart_tSNE/master/Images/Real_Parametric_TSNE_Content100_Style100_Grid20x20.jpg)
 
