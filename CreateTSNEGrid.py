@@ -5,8 +5,6 @@ import random
 import tensorflow as tf
 from lapjv import lapjv
 from scipy.spatial.distance import cdist
-from sklearn import manifold
-from sklearn.preprocessing import normalize
 from tensorflow.keras.preprocessing import image
 
 FILE_FOLDER = '//home//michael//git//wikiart_feature_maps//ConvNet_Features//'
