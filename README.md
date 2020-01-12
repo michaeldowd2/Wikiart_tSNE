@@ -2,6 +2,17 @@
 
 In this repo I've provided a full set of t-SNE embeddings for the wikiart dataset + a parametric t-SNE Model trained on those embeddings. Feel free to use them for art or machine learning projects.
 
+# Requirements
+
+To use the prebuilt embeddings, you'll need the following wikiart dataset:
+
+https://github.com/cs-chan/ArtGAN/blob/master/WikiArt%20Dataset/Genre/genre_val.csv
+
+To create new embeddings using the code, you'll need the following libraries preferably gpu enables where possible:
+Keras, tensorflow, sklearn, 
+
+# Design
+
 The embeddings are built using the keras applications VGG19 convolution network pretrained on the Imagenet dataset to extract two sets of features: one generally representing content (features extracted from the last layer of the network), the other generally representing style (features extracted from the conv3_1 layer of the network). 
 These sets features are normalised, weighted and combined before running the sklearn t-SNE over them. The output of this is used to train a neural network which can be used to generate t-SNE coordinates for any arbitrary image. Here's a summary diagram of the extraction process:
 
@@ -23,7 +34,7 @@ Creating the embeddings file or a parametric t-SNE model from scratch requires a
 4. A parametric t-SNE model can then be trained on the t-SNE embeddings - python LearnTSNE.py
 
 ## Resources and References
-I was inspired to roll my own t-SNEs by the following projects and papers:
+This project was inspired and informed by the following projects and papers:
 - http://smedia.ust.hk/james/projects/deepart_ana.html
 - https://cs.stanford.edu/people/karpathy/cnnembed/
 - https://jeremiahwjohnsondotcom.wordpress.com
