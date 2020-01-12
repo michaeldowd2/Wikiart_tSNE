@@ -6,7 +6,7 @@ In this repo I've provided a full set of t-SNE embeddings for the wikiart datase
 
 To use the prebuilt embeddings, you'll need the following wikiart dataset:
 
-https://github.com/cs-chan/ArtGAN/blob/master/WikiArt%20Dataset/Genre/genre_val.csv
+https://github.com/cs-chan/ArtGAN/tree/master/WikiArt%20Dataset
 
 To create new embeddings using the code, you'll need the following libraries preferably gpu enables where possible:
 Keras, tensorflow, sklearn, 
