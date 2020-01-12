@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import math
+import FileHelpers
 from sklearn.decomposition import IncrementalPCA
 from sklearn.externals import joblib 
 from tensorflow.keras.preprocessing import image
@@ -30,10 +31,9 @@ def gram_matrix(input_tensor):
   num_locations = tf.cast(input_shape[1]*input_shape[2], tf.float32)
   return result/(num_locations)
 
-
 def vgg_layers():
   """ Creates a vgg model that returns a list of intermediate output values."""
-  # Load our model. Load pretrained VGG, trained on imagenet data
+  # Load pretrained VGG, trained on imagenet data
   style_layers = ['block1_conv1',
                 'block2_conv1',
                 'block3_conv1']
@@ -90,6 +90,7 @@ def CreateFeatureFiles(ipca = None):
             vgg19_Style_Features.to_csv(os.path.join(file_Folder,'vgg19_Style_Features_Batch_'+str(i)+'.csv'))
             vgg19_Style_Dict = {}
 
+# Style embeddings are reduced with iterative PCA as the style layer output is too big
 def CreateFeaturePCA():
     vgg19 = vgg_layers()
     imageFiles = list_files(wikiArt_Folder)
@@ -112,6 +113,7 @@ def CreateFeaturePCA():
             style_outputs = [gram_matrix(style_output)
                          for style_output in outputs]
             style_out = tensor_to_array(style_outputs[2]).ravel()
+            # vgg19 style embeddings
             vgg19_Style_NP = np.vstack((vgg19_Style_NP,style_out))
         except:
             print('Image cant be loaded: ' + str(imageFile)) 
@@ -124,9 +126,9 @@ def CreateFeaturePCA():
                 vgg19_Style_NP = np.empty([0,65536])
             batchCount= batchCount+1
           
+    # iterative pca of vgg19 style embeddings
     joblib.dump(ipca, os.path.join(file_Folder,'Style_Features_PCA.pkl'))
     return ipca
-
 
 def MergeFeatureFiles():
     vgg19_Content_Files, vgg19_Style_Files = [], []
