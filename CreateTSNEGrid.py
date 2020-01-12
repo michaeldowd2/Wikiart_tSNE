@@ -1,34 +1,23 @@
 import os
 import numpy as np
 import pandas as pd
-import random
+import FileHelpers as fh
 import tensorflow as tf
 from lapjv import lapjv
 from scipy.spatial.distance import cdist
 from tensorflow.keras.preprocessing import image
+import argparse
 
-FILE_FOLDER = '//home//michael//git//wikiart_feature_maps//ConvNet_Features//'
-#FILE_FOLDER = '//src//ConvNet_Features//'
-WIKIART_FOLDER = '//home//michael//datasets//wikiart//'
-#WIKIART_FOLDER = '//src//wikiart//'
-STYLE_WEIGHT = 100
-CONTENT_WEIGHT = 100
-SIZE = 10
-OUTPUT_RES = 256
-random.seed(42)
-
-def SampleTSNEFile():
-    print('Sampling T-SNE Space')
-    tsne_File = 'TSNE_Content%d_Style%d.csv'%(CONTENT_WEIGHT,STYLE_WEIGHT)
-    tsne = pd.read_csv(os.path.join(FILE_FOLDER,tsne_File),index_col=0)
-    max_index = len(tsne.index)
-    sample_indices = random.sample(range(0, max_index), SIZE*SIZE)
-    image_list = [tsne.index[i] for i in sample_indices]
-    sampled_tsne = tsne[tsne.index.isin(image_list)]
-    return sampled_tsne
+parser = argparse.ArgumentParser()
+parser.add_argument('--CONTENT_WEIGHT', type=int, default=50)
+parser.add_argument('--STYLE_WEIGHT', type=int, default=50)
+parser.add_argument('--OUTPUT_RES', type=int, default = 256)
+parser.add_argument('--SIZE', type=int, default = 10)
+parser.add_argument('--OUTPUT_PATH', default='//home//michael//git//Wikiart_tSNE//Output_2//')
+parser.add_argument('--WIKIART_PATH', default = "//home//michael//datasets//testwikiart//")
+args = parser.parse_args()
 
 # https://github.com/prabodhhere/tsne-grid/blob/master/tsne_grid.py
-
 def save_tsne_grid(img_collection, X_2d, out_res, out_dim):
     print('Creating T-SNE Grid')
     to_plot = np.square(out_dim)
@@ -40,24 +29,24 @@ def save_tsne_grid(img_collection, X_2d, out_res, out_dim):
     out = np.ones((out_dim*out_res, out_dim*out_res, 3))
 
     for pos, img in zip(grid_jv, img_collection[0:to_plot]):
-        h_range = int(np.floor(pos[0]* (out_dim - 1) * OUTPUT_RES))
-        w_range = int(np.floor(pos[1]* (out_dim - 1) * OUTPUT_RES))
+        h_range = int(np.floor(pos[0]* (out_dim - 1) * args.OUTPUT_RES))
+        w_range = int(np.floor(pos[1]* (out_dim - 1) * args.OUTPUT_RES))
         out[h_range:h_range + out_res, w_range:w_range + out_res]  = image.img_to_array(img)
 
     im = image.array_to_img(out)
-    filename = 'TSNE_Content%d_Style%d_Grid%dx%d.jpg'%(CONTENT_WEIGHT,STYLE_WEIGHT,SIZE,SIZE)
-    im.save(os.path.join(FILE_FOLDER,filename), quality=100)
+    filename = 'TSNE_Content%d_Style%d_Grid%dx%d.jpg' % (args.CONTENT_WEIGHT, args.STYLE_WEIGHT, args.SIZE, args.SIZE)
+    im.save(os.path.join(args.OUTPUT_PATH, filename), quality=100)
 
 def GenerateTSNEGrid(SampledList):
     images = []
     i = 0
     for im in SampledList.index:
         print('Loading Image: ' + str(i) + '/' + str(len(SampledList.index)))
-        images.append(image.load_img(os.path.join(WIKIART_FOLDER, im), target_size=(OUTPUT_RES, OUTPUT_RES)))
+        images.append(image.load_img(os.path.join(args.WIKIART_PATH, im), target_size=(args.OUTPUT_RES, args.OUTPUT_RES)))
         i = i +1
     print('Normalising T-SNE Coordinates')
     tsnes = (SampledList-SampledList.min())/(SampledList.max()-SampledList.min())
-    save_tsne_grid(images, SampledList.values, OUTPUT_RES, SIZE)
+    save_tsne_grid(images, SampledList.values, args.OUTPUT_RES, args.SIZE)
      
-sampledList = SampleTSNEFile()
+sampledList = fh.SampleTSNESpace(args.OUTPUT_PATH, args.CONTENT_WEIGHT, args.STYLE_WEIGHT, args.SIZE)
 GenerateTSNEGrid(sampledList)
